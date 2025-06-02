@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
-from app import db
+from . import db
 
 
 @dataclass(init=False, repr=True, eq=True)

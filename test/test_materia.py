@@ -1,8 +1,9 @@
 #borren comentarios puros, comentarios de codigo a modificar
 import unittest
 import os
+from . import db
 from flask import current_app
-from app import create_app, db
+from config import create_app
 from app.models import Materia
 #from app.models import Autoridad 
 #from app.models import Categoria

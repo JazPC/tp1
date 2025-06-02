@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from app import db
+from . import db
 @dataclass(init=False, repr=True, eq=True)
 class Especialidad(db.Model):
   __tablename__ = 'especialidades'
