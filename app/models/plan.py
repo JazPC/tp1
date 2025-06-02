@@ -4,10 +4,9 @@ from app import db
 
 
 @dataclass(init=False, repr=True, eq=True)
-class Plan:
+class Plan(db.Model):
   __tablename__ = 'planes'
-  id : int = db.Column(db.Integer, primary_key=True, autoincrement=True , nullable=False)
-  nombre: str = db.Column(db.String(100), nullable=False)
-  fechaInicio: date = db.Column(db.Date, nullable=False)
-  fechaFin : date = db.Column(db.Date, nullable=False)
-  observacion: str = db.Column(db.String(100), nullable=False)
+  plan : int = db.Column(db.Integer, primary_key=True)
+  nombre : str = db.Column(db.String(50), nullable=False)  
+  especialidad : int = db.Column(db.Integer, db.ForeignKey('especialidades.id'), nullable=False)
+  

@@ -1,7 +1,6 @@
 from app.models import Facultad
 from app import db
 
-
 class FacultadRepository:
 
   @staticmethod

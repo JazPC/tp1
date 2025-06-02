@@ -8,5 +8,5 @@ class EspecialidadRepository:
   def crear_especialidad(especialidad: Especialidad):
     db.session.add(especialidad)
     db.session.commit()
-    return facultad
+    return especialidad
   
