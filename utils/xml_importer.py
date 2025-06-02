@@ -1,16 +1,22 @@
-import xml.etree.ElementTree as ET
-from db import Session
+# utils/xml_importer.py
 
-def parse_xml_to_dicts(xml_path, encoding="Windows-1252", record_tag=None):
+from db import Session
+import xml.etree.ElementTree as ET
+
+def parse_xml_to_dicts(xml_path, record_tag, encoding="Windows-1252"):
     tree = ET.parse(xml_path, parser=ET.XMLParser(encoding=encoding))
     root = tree.getroot()
-
     records = []
-    for item in root.findall(record_tag):
-        record = {child.tag: child.text for child in item}
+    for elem in root.findall(record_tag):
+        record = {child.tag: child.text for child in elem}
         records.append(record)
-
     return records
+
+def import_data(session, xml_path, model_class, record_tag):
+    registros = parse_xml_to_dicts(xml_path, record_tag)
+    for r in registros:
+        obj = model_class(**{k: (int(v) if v.isdigit() else v) for k,v in r.items()})
+        session.merge(obj)
 
 def with_session(func):
     def wrapper(*args, **kwargs):
@@ -19,7 +25,7 @@ def with_session(func):
             result = func(session, *args, **kwargs)
             session.commit()
             return result
-        except Exception:
+        except:
             session.rollback()
             raise
         finally:
