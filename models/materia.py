@@ -6,5 +6,5 @@ class Materia(Base):
     materia = Column(Integer, primary_key=True)
     especialidad = Column(Integer, ForeignKey('especialidades.especialidad'), nullable=False)
     plan = Column(Integer, ForeignKey('planes.plan'), nullable=False)
-    nombre = Column(String(100), nullable=False, unique=True)
-    año = Column(Integer, nullable=False)
+    nombre = Column(String(100), nullable=False)
+    ano = Column(Integer, nullable=False)
