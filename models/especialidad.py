@@ -1,7 +1,7 @@
-from dataclasses import dataclass
-from . import db
-@dataclass(init=False, repr=True, eq=True)
-class Especialidad(db.Model):
+from sqlalchemy import Column, Integer, String
+from .base import Base
+
+class Especialidad(Base):
   __tablename__ = 'especialidades'
-  especialidad : int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  nombre : str = db.Column(db.String(100), nullable=False, unique=True) 
+  especialidad = Column(Integer, primary_key=True, autoincrement=True)
+  nombre = Column(String(100), nullable=False, unique=True) 

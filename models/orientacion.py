@@ -1,10 +1,9 @@
-from dataclasses import dataclass
-from . import db
+from sqlalchemy import Column, Integer, String, ForeignKey
+from .base import Base
 
-@dataclass(init=False, repr=True, eq=True)
-class Orientacion(db.Model):
+class Orientacion(Base):
   __tablename__ = 'orientacion'
-  orientacion : int = db.Column(db.Integer, primary_key=True)
-  especialidad : int = db.Column(db.Integer, foreign_key='especialidad.id', nullable=False)
-  plan : int = db.Column(db.Integer, foreign_key='plan.id', nullable=False)
-  nombre : str = db.Column(db.String(50), primary_key=True, nullable=False)
+  orientacion = Column(Integer, primary_key=True)
+  especialidad = Column(Integer, ForeignKey('especialidades.especialidad'), nullable=False)
+  plan = Column(Integer, ForeignKey('planes.plan'), nullable=False)
+  nombre = Column(String(50), primary_key=True, nullable=False)

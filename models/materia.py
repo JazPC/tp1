@@ -1,11 +1,10 @@
-from dataclasses import dataclass
-from . import db
+from sqlalchemy import Column, Integer, String, ForeignKey
+from .base import Base
 
-@dataclass(init=False, repr=True, eq=True)
-class Materia(db.Model):
+class Materia(Base):
     __tablename__ = 'materias'
-    materia : int = db.Column(db.Integer, primary_key=True)
-    especialidad : int = db.Column(db.Integer, db.ForeignKey('especialidades.id'), nullable=False)
-    plan : int = db.Column(db.Integer, db.ForeignKey('planes.id'), nullable=False)
-    nombre : str = db.Column(db.String(100), nullable=False, unique=True)
-    año : int = db.Column(db.Integer, nullable=False)
+    materia = Column(Integer, primary_key=True)
+    especialidad = Column(Integer, ForeignKey('especialidades.especialidad'), nullable=False)
+    plan = Column(Integer, ForeignKey('planes.plan'), nullable=False)
+    nombre = Column(String(100), nullable=False, unique=True)
+    año = Column(Integer, nullable=False)

@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from sqlalchemy import Column, Integer, String
+from .base import Base
 
-@dataclass(init=False, repr=True, eq=True)
-class Universidad(db.Model):
+class Universidad(Base):
     __tablename__ = 'universidades'
-    universida : int = db.Column(db.Integer, primary_key=True)
-    nombre : str = db.Column(db.String(100), nullable=False)
+    universida = Column(Integer, primary_key=True)
+    nombre = Column(String(100), nullable=False)
 
     
