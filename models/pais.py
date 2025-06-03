@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-from . import db
+from sqlalchemy import Column, Integer, String
+from .base import Base
 
-@dataclass(init=False, repr=True, eq=True)
-class Pais(db.Model):
+class Pais(Base):
     __tablename__ = 'pais'
-    pais : int = db.Column(db.Integer, primary_key=True)
-    nombre : str = db.Column(db.String(50), nullable=False, unique=True)
+    pais = Column(Integer, primary_key=True)
+    nombre = Column(String(50), nullable=False, unique=True)

@@ -1,5 +1,4 @@
 # utils/xml_importer.py
-
 from db import Session
 import xml.etree.ElementTree as ET
 

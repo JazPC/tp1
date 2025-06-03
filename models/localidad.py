@@ -1,10 +1,9 @@
-from dataclasses import dataclass
-from . import db
+from sqlalchemy import Column, Integer, String
+from .base import Base
 
-@dataclass(init=False, repr=True, eq=True)
-class Localidad(db.Model):
+class Localidad(Base):
     __tablename__ = 'localidades'
-    codigo : int = db.Column(db.Integer, primary_key=True)
-    ciudad : str = db.Column(db.String(100), nullable=False, unique=True)
-    provincia : str = db.Column(db.String(100), nullable=False)
-    pais_del_c : str = db.Column(db.String(100), nullable=False) 
+    codigo = Column(Integer, primary_key=True)
+    ciudad = Column(String(100), nullable=False, unique=True)
+    provincia = Column(String(100), nullable=False)
+    pais_del_c = Column(String(100), nullable=False) 
