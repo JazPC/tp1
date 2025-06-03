@@ -14,7 +14,7 @@ def parse_xml_to_dicts(xml_path, record_tag, encoding="Windows-1252"):
 def import_data(session, xml_path, model_class, record_tag):
     registros = parse_xml_to_dicts(xml_path, record_tag)
     for r in registros:
-        obj = model_class(**{k: (int(v) if v.isdigit() else v) for k,v in r.items()})
+        obj = model_class(**{k: (int(v) if v is not None and v.isdigit() else v) for k, v in r.items()})
         session.merge(obj)
 
 def with_session(func):
