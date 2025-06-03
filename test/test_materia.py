@@ -1,22 +1,21 @@
-from utils.xml_importer import import_data
-from models import Materia
+import unittest
 import tempfile
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.base import Base
-import unittest
+from utils.xml_importer import import_data
+from models import Materia
 
 class TestImportMaterias(unittest.TestCase):
     def setUp(self):
-        # Crea base de datos en memoria y las tablas
         engine = create_engine("sqlite:///:memory:")
         Base.metadata.create_all(engine)
         self.Session = sessionmaker(bind=engine)
-
-    def test_importar_materias(self):
-        # XML de prueba
-        xml_content = """
+        
+        # Crear archivo temporal
+        self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
+        self.temp.write("""
         <root>
             <_expxml>
                 <especialidad>1</especialidad>
@@ -33,30 +32,28 @@ class TestImportMaterias(unittest.TestCase):
                 <ano>2</ano>
             </_expxml>
         </root>
-        """
+        """)
+        self.temp.close() 
 
-        # Crea archivo temporal para simular el XML de entrada
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252") as temp:
-            temp.write(xml_content)
-            temp_path = temp.name
+    def tearDown(self):
+        try:
+            os.remove(self.temp.name)
+        except Exception:
+            pass
 
+    def test_importar_materias(self):
         session = self.Session()
-        import_data(session, temp_path, Materia, record_tag="_expxml")
+        import_data(session, self.temp.name, Materia, record_tag="_expxml")
         session.commit()
 
-        # Consultar datos importados
         resultados = session.query(Materia).order_by(Materia.especialidad).all()
-
-        # Comprobar que se importaron 2 registros
         self.assertEqual(len(resultados), 2)
-        # Validar contenido de cada registro
         self.assertEqual(resultados[0].especialidad, 1)
         self.assertEqual(resultados[0].nombre, "Matemáticas")
         self.assertEqual(resultados[1].especialidad, 2)
         self.assertEqual(resultados[1].nombre, "Lengua")
 
-        # Eliminar archivo temporal
-        os.remove(temp_path)
+        session.close()
 
 if __name__ == '__main__':
     unittest.main()
