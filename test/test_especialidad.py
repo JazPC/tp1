@@ -1,22 +1,22 @@
-from utils.xml_importer import import_data
-from models import Especialidad
+import unittest
 import tempfile
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.base import Base
-import unittest
+from utils.xml_importer import import_data
+from models import Especialidad
 
 class TestImportEspecialidades(unittest.TestCase):
     def setUp(self):
-        # Crea base de datos en memoria y las tablas
+        #Crea bd en memoria
         engine = create_engine("sqlite:///:memory:")
         Base.metadata.create_all(engine)
         self.Session = sessionmaker(bind=engine)
 
-    def test_importar_especialidades(self):
-        # XML de prueba
-        xml_content = """
+        # Archivo temporal para simular el XML de entrada
+        self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
+        self.temp.write("""
         <root>
             <_expxml>
                 <especialidad>1</especialidad>
@@ -27,30 +27,29 @@ class TestImportEspecialidades(unittest.TestCase):
                 <nombre>Neurología</nombre>
             </_expxml>
         </root>
-        """
+        """)
+        self.temp.close()
 
-        # Crea archivo temporal para simular el XML de entrada
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252") as temp:
-            temp.write(xml_content)
-            temp_path = temp.name
+    def tearDown(self):
+        try:
+            os.remove(self.temp.name)
+        except Exception:
+            pass
 
+    def test_importar_especialidades(self):
         session = self.Session()
-        import_data(session, temp_path, Especialidad, record_tag="_expxml")
+        import_data(session, self.temp.name, Especialidad, record_tag="_expxml")
         session.commit()
 
-        # Consultar datos importados
         resultados = session.query(Especialidad).order_by(Especialidad.especialidad).all()
-
-        # Comprobar que se importaron 2 registros
         self.assertEqual(len(resultados), 2)
-        # Validar contenido de cada registro
         self.assertEqual(resultados[0].especialidad, 1)
         self.assertEqual(resultados[0].nombre, "Cardiología")
         self.assertEqual(resultados[1].especialidad, 2)
         self.assertEqual(resultados[1].nombre, "Neurología")
 
-        # Eliminar archivo temporal
-        os.remove(temp_path)
+        session.close()
 
 if __name__ == '__main__':
     unittest.main()
+      
