@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from .base import Base
 
 class Orientacion(Base):
     __tablename__ = 'orientaciones'
-    id = Column(Integer, primary_key=True, autoincrement=True) 
-    orientacion = Column(Integer, nullable=False)
-    especialidad = Column(Integer, ForeignKey('especialidades.especialidad'), nullable=False)
-    plan = Column(Integer, ForeignKey('planes.plan'), nullable=False)
-    nombre = Column(String(100), nullable=True)
+    especialidad = Column(Integer, primary_key=True)
+    plan = Column(Integer, primary_key=True)
+    orientacion = Column(Integer, primary_key=True)
+    nombre = Column(String(150), nullable=False)

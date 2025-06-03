@@ -1,3 +1,5 @@
+import time
+
 from models import Base
 from db import engine
 from importer.especialidad_importer import importar_especialidades
@@ -10,6 +12,7 @@ from importer.pais_importer import importar_paises
 from importer.plan_importer import importar_planes
 from importer.universidad_importer import importar_universidades
 
+
 def main():
     print("Creando tablas...")
     Base.metadata.create_all(engine)
@@ -19,21 +22,27 @@ def main():
         (importar_facultades, "xml/facultades.xml"),
         (importar_grados, "xml/grados.xml"),
         (importar_localidades, "xml/localidades.xml"),
-        (importar_materias, "xml/materias.xml"),
         (importar_orientaciones, "xml/orientaciones.xml"),
         (importar_paises, "xml/paises.xml"),
         (importar_planes, "xml/planes.xml"),
-        (importar_universidades, "xml/universidad.xml"),
+        (importar_materias, "xml/materias.xml"),
+        (importar_universidades, "xml/universidades.xml"),
     ]
+
+    start_total = time.time()
 
     for func_importar, archivo_xml in importaciones:
         try:
             print(f"Importando {archivo_xml} ...")
+            start = time.time()
             func_importar(archivo_xml)
+            end = time.time()
+            print(f"Importado {archivo_xml} en {end - start:.2f} segundos.")
         except Exception as e:
             print(f"Error al importar {archivo_xml}: {e}")
 
-    print("Importación finalizada.")
+    end_total = time.time()
+    print(f"Importación finalizada en {end_total - start_total:.2f} segundos.")
 
 if __name__ == "__main__":
     main()

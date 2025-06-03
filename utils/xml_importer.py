@@ -1,4 +1,3 @@
-# utils/xml_importer.py
 from db import Session
 import xml.etree.ElementTree as ET
 
@@ -13,9 +12,18 @@ def parse_xml_to_dicts(xml_path, record_tag, encoding="Windows-1252"):
 
 def import_data(session, xml_path, model_class, record_tag):
     registros = parse_xml_to_dicts(xml_path, record_tag)
-    for r in registros:
-        obj = model_class(**{k: (int(v) if v is not None and v.isdigit() else v) for k, v in r.items()})
-        session.merge(obj)
+    for i, r in enumerate(registros, start=1):
+        try:
+            # Conversión segura: solo convierte strings que sean dígitos completos
+            datos_convertidos = {
+                k: (int(v) if v is not None and v.isdigit() else v)
+                for k, v in r.items()
+            }
+            obj = model_class(**datos_convertidos)
+            session.merge(obj)
+        except Exception as e:
+            print(f"Error en registro {i}: {r}")
+            print(f"Detalle del error: {e}")
 
 def with_session(func):
     def wrapper(*args, **kwargs):
@@ -24,8 +32,9 @@ def with_session(func):
             result = func(session, *args, **kwargs)
             session.commit()
             return result
-        except:
+        except Exception as e:
             session.rollback()
+            print(f"Error en la sesión: {e}")
             raise
         finally:
             session.close()
