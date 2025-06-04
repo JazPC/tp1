@@ -1,33 +1,49 @@
 import unittest
-from flask import current_app
-from config import create_app
-from app.models import Plan
+import tempfile
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models.base import Base
+from utils.xml_importer import import_data
+from models import Plan
 
-class PlanTestCase(unittest.TestCase):
-
+class TestImportPlan(unittest.TestCase):
     def setUp(self):
-        self.app = create_app()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        engine = create_engine("sqlite:///:memory:")
+        Base.metadata.create_all(engine)
+        self.Session = sessionmaker(bind=engine)
+        
+        # Crear archivo temporal
+        self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
+        self.temp.write("""
+        <root>
+            <_expxml>
+                <especialidad>274</especialidad>
+		        <plan>2009</plan>
+		        <nombre/>
+            </_expxml>
+        </root>
+        """)
+        self.temp.close() 
 
     def tearDown(self):
-        self.app_context.pop()
+        try:
+            os.remove(self.temp.name)
+        except Exception:
+            pass
 
-    def test_app(self):
-        self.assertIsNotNone(current_app)
-  
-    def test_plan(self):
-        plan = Plan()
-        plan.nombre = 'Sistemas'
-        plan.fechaInicio = '12 de noviembre 2024'
-        plan.fechaFin = '12 de diciembre 2024'
-        plan.observacion = 'Se dicta solo un mes'
+    def test_importar_Plans(self):
+        session = self.Session()
+        import_data(session, self.temp.name, Plan, record_tag="_expxml")
+        session.commit()
 
-        self.assertIsNotNone(plan)
-        self.assertEqual(plan.nombre, 'Sistemas')
-        self.assertEqual(plan.fechaInicio, '12 de noviembre 2024')
-        self.assertEqual(plan.fechaFin, '12 de diciembre 2024')
-        self.assertEqual(plan.observacion, 'Se dicta solo un mes')
+        resultados = session.query(Plan).order_by(Plan.plan).all()
+        self.assertEqual(len(resultados), 1)
+        self.assertEqual(resultados[0].especialidad, 274)
+        self.assertEqual(resultados[0].plan, 2009)
+        self.assertEqual(resultados[0].nombre, None)
+
+        session.close()
 
 if __name__ == '__main__':
     unittest.main()

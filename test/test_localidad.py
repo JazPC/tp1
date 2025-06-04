@@ -5,9 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.base import Base
 from utils.xml_importer import import_data
-from models import Especialidad
+from models import Localidad
 
-class TestImportEspecialidades(unittest.TestCase):
+class TestImportLocalidades(unittest.TestCase):
     def setUp(self):
         #Crea bd en memoria
         engine = create_engine("sqlite:///:memory:")
@@ -19,15 +19,11 @@ class TestImportEspecialidades(unittest.TestCase):
         self.temp.write("""
         <root>
             <_expxml>
-                <especialidad>1</especialidad>
-                <nombre>Cardiología</nombre>
+                <codigo>1</codigo>
+                <ciudad>Ciudad Autónoma de Buenos Aires</ciudad>
+                <provincia>Capital Federal</provincia>
+                <pais_del_c>Argentina</pais_del_c>
             </_expxml>
-            <_expxml>
-                <especialidad>2</especialidad>
-                <nombre>Neurología</nombre>
-            </_expxml>
-            
-            
         </root>
         """)
         self.temp.close()
@@ -38,17 +34,17 @@ class TestImportEspecialidades(unittest.TestCase):
         except Exception:
             pass
 
-    def test_importar_especialidades(self):
+    def test_importar_Localidades(self):
         session = self.Session()
-        import_data(session, self.temp.name, Especialidad, record_tag="_expxml")
+        import_data(session, self.temp.name, Localidad, record_tag="_expxml")
         session.commit()
 
-        resultados = session.query(Especialidad).order_by(Especialidad.especialidad).all()
-        self.assertEqual(len(resultados), 2)
-        self.assertEqual(resultados[0].especialidad, 1)
-        self.assertEqual(resultados[0].nombre, "Cardiología")
-        self.assertEqual(resultados[1].especialidad, 2)
-        self.assertEqual(resultados[1].nombre, "Neurología")
+        resultados = session.query(Localidad).order_by(Localidad.codigo).all()
+        self.assertEqual(len(resultados), 1)
+        self.assertEqual(resultados[0].codigo, 1)
+        self.assertEqual(resultados[0].ciudad, "Ciudad Autónoma de Buenos Aires")
+        self.assertEqual(resultados[0].provincia, "Capital Federal")
+        self.assertEqual(resultados[0].pais_del_c, "Argentina")
 
         session.close()
 

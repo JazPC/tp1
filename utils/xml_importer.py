@@ -19,6 +19,7 @@ def import_data(session, xml_path, model_class, record_tag):
                 k: (int(v) if v is not None and v.isdigit() else v)
                 for k, v in r.items()
             }
+            #refactor de los nombres k y v, para que sean más claros
             obj = model_class(**datos_convertidos)
             session.merge(obj)
         except Exception as e:
@@ -39,3 +40,5 @@ def with_session(func):
         finally:
             session.close()
     return wrapper
+
+

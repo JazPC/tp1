@@ -1,34 +1,48 @@
 import unittest
-from flask import current_app
-from config import create_app
-from app.models import Universidad
+import tempfile
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models.base import Base
+from utils.xml_importer import import_data
+from models import Universidad
 
-class AppTestCase(unittest.TestCase):
-
+class TestImportUniversidad(unittest.TestCase):
     def setUp(self):
-        os.environ['FLASK_CONTEXT'] = 'testing'
-        self.app = create_app()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        engine = create_engine("sqlite:///:memory:")
+        Base.metadata.create_all(engine)
+        self.Session = sessionmaker(bind=engine)
+        
+        # Crear archivo temporal
+        self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
+        self.temp.write("""
+        <root>
+            <_expxml>
+                <universida>1</universida>
+		        <nombre>Universidad Nacional de Buenos Aires</nombre>
+            </_expxml>
+        </root>
+        """)
+        self.temp.close() 
 
     def tearDown(self):
-        self.app_context.pop()
+        try:
+            os.remove(self.temp.name)
+        except Exception:
+            pass
 
-    def test_app(self):
-        self.assertIsNotNone(current_app)
-    
-    def test_cart(self):
-        universidad = Universidad()
-        universidad.nombre = "Universidad Tecnologica Nacional"
-        universidad.sigla = "UTN"
-        universidad.tipo = "publica"
-        universidad.anoFundacion = "1948"
-        self.assertIsNotNone(universidad)
-        self.assertEqual(universidad.nombre, "Universidad Tecnologica Nacional")
-        self.assertEqual(universidad.sigla, "UTN")
-        self.assertEqual(universidad.tipo, "publica")
-        self.assertEqual(universidad.anoFundacion, "1948")
+    def test_importar_Universidads(self):
+        session = self.Session()
+        import_data(session, self.temp.name, Universidad, record_tag="_expxml")
+        session.commit()
+
+        resultados = session.query(Universidad).order_by(Universidad.universida).all()
+        self.assertEqual(len(resultados), 1)
+        self.assertEqual(resultados[0].universida, 1)
+        self.assertEqual(resultados[0].nombre, "Universidad Nacional de Buenos Aires")
+
+
+        session.close()
 
 if __name__ == '__main__':
     unittest.main()
