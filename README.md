@@ -40,7 +40,7 @@ Este proyecto tiene como objetivo importar datos desde archivos XML del sistema 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/JazPC/tp1_importacion_de_xml.git ```
+git clone https://github.com/JazPC/tp1_importacion_de_xml.git ´´´
 
 
 2_(Opcional) Crear un entorno virtual
@@ -63,6 +63,8 @@ Pruebas automáticas (TDD)
 
 Para correr las pruebas desarrolladas siguiendo TDD:
 python -m unittest discover
+
+---
 
 Autores
 Jazmín Pérez Castro
