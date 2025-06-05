@@ -37,10 +37,9 @@ Este proyecto tiene como objetivo importar datos desde archivos XML del sistema 
 
 ## Instrucciones de instalación y ejecución
 
-### 1. Clonar el repositorio
+1. Clonar el repositorio
 
-```bash
-git clone https://github.com/JazPC/tp1_importacion_de_xml.git ´´´
+git clone https://github.com/JazPC/tp1_importacion_de_xml.git
 
 
 2_(Opcional) Crear un entorno virtual
@@ -59,14 +58,14 @@ DB_NAME=DEV_SYSACAD
 
 5_Ejecutar la aplicación
 python main.py
-Pruebas automáticas (TDD)
 
+### Pruebas TDD
 Para correr las pruebas desarrolladas siguiendo TDD:
 python -m unittest discover
 
 ---
 
-Autores
+### Autores
 Jazmín Pérez Castro
 Celeste Choquevillca
 
