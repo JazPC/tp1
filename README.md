@@ -1,43 +1,47 @@
-Proyecto SYSACAD – Importador de Datos XML
-Este proyecto tiene como objetivo importar datos desde archivos XML del sistema heredado y almacenarlos en la base de datos DEV_SYSACAD.
- Funcionalidades
-Importación de los siguientes archivos XML:
+# Proyecto SYSACAD – Importador de Datos XML
 
+Este proyecto tiene como objetivo importar datos desde archivos XML del sistema heredado y almacenarlos en la base de datos **DEV_SYSACAD**.
 
-grados.xml
-universidad.xml
-facultades.xml
-materias.xml
-localidades.xml
-especialidades.xml
-orientaciones.xml
-planes.xml
-paises.xml
+---
 
+## Funcionalidades
 
-Conversión de los datos XML a objetos Python.
+### Importación de los siguientes archivos XML:
 
+- grados.xml  
+- universidad.xml  
+- facultades.xml  
+- materias.xml  
+- localidades.xml  
+- especialidades.xml  
+- orientaciones.xml  
+- planes.xml  
+- paises.xml  
 
-Persistencia de registros en la base de datos DEV_SYSACAD mediante SQLAlchemy.
+### Otras funcionalidades:
 
+- Conversión de los datos XML a objetos Python.  
+- Persistencia de registros en la base de datos **DEV_SYSACAD** mediante SQLAlchemy.  
+- Validación de identificadores únicos utilizando `session.merge()`.  
+- Codificación soportada: **Windows-1252**.
 
-Validación de identificadores únicos utilizando session.merge().
+---
 
+## Requisitos
 
-Codificación soportada: Windows-1252.
+- Python 3.10 o superior  
+- Base de datos compatible (PostgreSQL)  
+- Archivos XML con codificación **Windows-1252**
 
+---
 
-Requisitos
-Python 3.10 o superior
+## Instrucciones de instalación y ejecución
 
+### 1. Clonar el repositorio
 
-Base de datos compatible (PostgreSQL)
+```bash
+git clone https://github.com/JazPC/tp1_importacion_de_xml.git ```
 
-
-Archivos XML con codificación Windows-1252
- Instrucciones de instalación y ejecución
-1_Clonar el repositorio
-git clone https://github.com/JazPC/tp1_importacion_de_xml.git
 
 2_(Opcional) Crear un entorno virtual
 python -m venv venv
@@ -63,3 +67,5 @@ python -m unittest discover
 Autores
 Jazmín Pérez Castro
 Celeste Choquevillca
+
+---
