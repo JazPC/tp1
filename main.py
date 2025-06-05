@@ -27,7 +27,7 @@ def main():
         (import_paises, "xml/paises.xml"),
         (import_planes, "xml/planes.xml"),
         (import_materias, "xml/materias.xml"),
-        (import_universidades, "xml/universidades.xml"),
+        (import_universidades, "xml/universidad.xml"),
     ]
 
     start_total = time.time()

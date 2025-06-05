@@ -12,18 +12,16 @@ def parse_xml_to_dicts(xml_path, record_tag, encoding="Windows-1252"):
 
 def import_data(session, xml_path, model_class, record_tag):
     registros = parse_xml_to_dicts(xml_path, record_tag)
-    for i, r in enumerate(registros, start=1):
+    for i, diccionario_registro in enumerate(registros, start=1):
         try:
-            # Conversión segura: solo convierte strings que sean dígitos completos
             datos_convertidos = {
-                k: (int(v) if v is not None and v.isdigit() else v)
-                for k, v in r.items()
+                clave: (int(valor) if valor is not None and valor.isdigit() else valor)
+                for clave, valor in diccionario_registro.items()
             }
-            #refactor de los nombres k y v, para que sean más claros
             obj = model_class(**datos_convertidos)
             session.merge(obj)
         except Exception as e:
-            print(f"Error en registro {i}: {r}")
+            print(f"Error en registro {i}: {diccionario_registro}")
             print(f"Detalle del error: {e}")
 
 def with_session(func):
