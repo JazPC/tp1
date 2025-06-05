@@ -9,12 +9,10 @@ from models import Facultad
 
 class TestImportFacultades(unittest.TestCase):
     def setUp(self):
-        #Crea bd en memoria
         engine = create_engine("sqlite:///:memory:")
         Base.metadata.create_all(engine)
         self.Session = sessionmaker(bind=engine)
 
-        # Archivo temporal para simular el XML de entrada
         self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
         self.temp.write("""
         <root>

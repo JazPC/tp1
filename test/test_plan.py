@@ -13,7 +13,6 @@ class TestImportPlan(unittest.TestCase):
         Base.metadata.create_all(engine)
         self.Session = sessionmaker(bind=engine)
         
-        # Crear archivo temporal
         self.temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xml", mode="w", encoding="Windows-1252")
         self.temp.write("""
         <root>
